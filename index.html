@@ -1,0 +1,29 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Job Matches</h1>
+    <input type="text" id="userId" placeholder="Enter User ID">
+    <button onclick="fetchMatches()">Get Matches</button>
+    <ul id="matches"></ul>
+
+    <script>
+        async function fetchMatches() {
+            const userId = document.getElementById("userId").value;
+            const response = await fetch(`http://localhost:8000/matches/${userId}`);
+            const data = await response.json();
+            const matchesList = document.getElementById("matches");
+            matchesList.innerHTML = "";
+            if (data.matches.length > 0) {
+                data.matches.forEach(match => {
+                    const li = document.createElement("li");
+                    li.textContent = `${match.job_id}: ${match.job_text} (Score: ${match.score.toFixed(2)}%)`;
+                    matchesList.appendChild(li);
+                });
+            } else {
+                matchesList.innerHTML = `<li>${data.error || "No matches found"}</li>`;
+            }
+        }
+    </script>
+</body>
+</html>
